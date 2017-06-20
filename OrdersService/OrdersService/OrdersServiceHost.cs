@@ -91,7 +91,7 @@ namespace OrdersService
         private void ListenOnQueues()
         {
             _bus = RabbitHutch.CreateBus(Settings.Default.RabbitMqConnectionString);
-            
+
             _bus.Subscribe<ShippingCreatedMessage>("shipping", msg =>
             {
                 Log.Information("###Shipping created: " + msg.Created + " for " + msg.OrderId);
@@ -120,18 +120,15 @@ namespace OrdersService
             Mapper.AssertConfigurationIsValid();
         }
 
-        private static void StartWebApi(string hostBaseUrl, string webApiBaseUrl, string healthUrl)
+        private static async void StartWebApi(string hostBaseUrl, string webApiBaseUrl, string healthUrl)
         {
             var registryHost = new ConsulRegistryHost();
             _serviceRegistry = new ServiceRegistry(registryHost);
 
-            Task.Run(async () =>
-            {
-                _registryInformation = await _serviceRegistry.AddTenantAsync(new CustomWebApiRegistryTenant(new Uri(webApiBaseUrl)), "orders", "0.0.2", new Uri(healthUrl));
+            _registryInformation = await _serviceRegistry.AddTenantAsync(new CustomWebApiRegistryTenant(new Uri(webApiBaseUrl)), "orders", "0.0.2", new Uri(healthUrl));
 
-                _server = WebApp.Start<Startup>(hostBaseUrl);
-                Log.Information("Orders Service running - listening at {0} ...", hostBaseUrl);
-            }).GetAwaiter().GetResult();
+            _server = WebApp.Start<Startup>(hostBaseUrl);
+            Log.Information("Orders Service running - listening at {0} ...", hostBaseUrl);
         }
 
         private static async void CurrentDomain_ProcessExit(object sender, EventArgs e)
