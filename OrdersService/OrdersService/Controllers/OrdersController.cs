@@ -2,6 +2,8 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Web.Http;
 using AutoMapper;
@@ -44,8 +46,13 @@ namespace OrdersService.Controllers
 
         [HttpPost]
         [Route]
-        public void AddNewOrder(Order newOrder)
+        public IHttpActionResult AddNewOrder(Order newOrder)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var orderId = Guid.NewGuid();
             newOrder.Id = orderId;
 
@@ -80,6 +87,8 @@ namespace OrdersService.Controllers
                    .Clients.Group(message.UserId)
                    .orderCreated();
             }
+
+            return Ok(newOrder);
         }
     }
 }

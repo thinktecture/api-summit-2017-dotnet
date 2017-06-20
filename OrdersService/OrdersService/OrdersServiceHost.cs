@@ -96,6 +96,8 @@ namespace OrdersService
             {
                 Log.Information("###Shipping created: " + msg.Created + " for " + msg.OrderId);
 
+                // TODO: maybe update the order with shipping information?
+
                 GlobalHost.ConnectionManager.GetHubContext<OrdersHub>()
                    .Clients.Group(msg.UserId)
                    .shippingCreated(msg.OrderId);
