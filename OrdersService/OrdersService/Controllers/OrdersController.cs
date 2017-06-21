@@ -2,8 +2,13 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Web.Http;
-using OrdersService.DTOs;
+using AutoMapper;
+using EasyNetQ;
+using OrdersService.Properties;
+using QueuingMessages;
+using Order = OrdersService.DTOs.Order;
 
 namespace OrdersService.Controllers
 {
@@ -33,6 +38,22 @@ namespace OrdersService.Controllers
             newOrder.Id = orderId;
 
             Datastore.TryAdd(orderId, newOrder);
+
+            // TODO: Retry & exception handling
+            using (var bus = RabbitHutch.CreateBus(Settings.Default.RabbitMQConnectionString))
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                var subjectId = identity?.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+
+                var message = new NewOrderMessage
+                {
+                    UserId = subjectId,
+                    Order = Mapper.Map<QueuingMessages.Order>(newOrder)
+                };
+
+                // TODO: Exception handling
+                bus.Publish(message);
+            }
         }
     }
 }

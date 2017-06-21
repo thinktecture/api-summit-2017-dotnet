@@ -58,5 +58,29 @@ namespace OrdersService.Properties {
                 this["WebApiHealthUrl"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:5000")]
+        public string IdSrvBaseUrl {
+            get {
+                return ((string)(this["IdSrvBaseUrl"]));
+            }
+            set {
+                this["IdSrvBaseUrl"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("host=localhost")]
+        public string RabbitMQConnectionString {
+            get {
+                return ((string)(this["RabbitMQConnectionString"]));
+            }
+            set {
+                this["RabbitMQConnectionString"] = value;
+            }
+        }
     }
 }

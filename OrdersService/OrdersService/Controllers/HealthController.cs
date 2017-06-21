@@ -13,6 +13,7 @@ namespace OrdersService.Controllers
     {
         [HttpGet]
         [Route("ping")]
+        [AllowAnonymous]
         public string Ping()
         {
             return "OK";
