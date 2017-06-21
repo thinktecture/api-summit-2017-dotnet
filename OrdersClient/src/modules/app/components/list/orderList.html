@@ -10,10 +10,10 @@
   </thead>
   <tbody>
     <tr *ngFor="let order of orders">
-      <td>{{ order.Id }}</td>
-      <td>{{ order.Created | date: 'dd.MM.yyyy HH:mm' }}</td>
-      <td *ngIf="order.ShippingCreated"><i class="fa fa-check"></i></td>
-      <td *ngIf="!order.ShippingCreated"> </td>
+      <td>{{ order.id }}</td>
+      <td>{{ order.created | date: 'dd.MM.yyyy HH:mm' }}</td>
+      <td *ngIf="order.shippingCreated"><i class="fa fa-check"></i></td>
+      <td *ngIf="!order.shippingCreated"> </td>
     </tr>
   </tbody>
 </table>

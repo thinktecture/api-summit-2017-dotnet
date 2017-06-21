@@ -6,6 +6,8 @@ using System.Security.Claims;
 using System.Web.Http;
 using AutoMapper;
 using EasyNetQ;
+using Microsoft.AspNet.SignalR;
+using OrdersService.Hubs;
 using OrdersService.Properties;
 using QueuingMessages;
 using Order = OrdersService.DTOs.Order;
@@ -53,7 +55,13 @@ namespace OrdersService.Controllers
 
                 // TODO: Exception handling
                 bus.Publish(message);
+
+                GlobalHost.ConnectionManager.GetHubContext<OrdersHub>()
+                    .Clients.Group(message.UserId)
+                    .orderCreated();
             }
+
+            
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Web.Http.Cors;
 using IdentityServer3.AccessTokenValidation;
 using Microsoft.Owin.Cors;
 using Newtonsoft.Json.Serialization;
+using OrdersService.Infrastructure;
 using OrdersService.Properties;
 using Owin;
 using Swashbuckle.Application;
@@ -17,6 +18,8 @@ namespace OrdersService
     {
         public void Configuration(IAppBuilder app)
         {
+            app.Use(typeof(SignalRAuthorizationMiddleware));
+
             JwtSecurityTokenHandler.InboundClaimTypeMap = new Dictionary<string, string>();
             app.UseIdentityServerBearerTokenAuthentication(new IdentityServerBearerTokenAuthenticationOptions
             {
@@ -46,6 +49,8 @@ namespace OrdersService
             httpConfig.Filters.Add(new AuthorizeAttribute());
 
             app.UseWebApi(httpConfig);
+
+            app.MapSignalR();
         }
     }
 }

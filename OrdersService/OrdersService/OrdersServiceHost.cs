@@ -2,10 +2,12 @@
 using AutoMapper;
 using EasyNetQ;
 using EasyNetQ.Topology;
+using Microsoft.AspNet.SignalR;
 using Microsoft.Owin;
 using Microsoft.Owin.Hosting;
 using Nanophone.Core;
 using Nanophone.RegistryHost.ConsulRegistry;
+using OrdersService.Hubs;
 using OrdersService.Infrastructure;
 using OrdersService.Properties;
 using QueuingMessages;
@@ -41,6 +43,10 @@ namespace OrdersService
             _bus.Subscribe<ShippingCreatedMessage>("shipping", msg =>
             {
                 Console.WriteLine("###Shipping created: " + msg.Created + " for " + msg.OrderId);
+
+                GlobalHost.ConnectionManager.GetHubContext<OrdersHub>()
+                    .Clients.Group(msg.UserId)
+                    .shippingCreated(msg.OrderId);
             });
         }
 

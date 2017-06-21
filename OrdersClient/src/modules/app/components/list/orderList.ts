@@ -15,11 +15,11 @@ export class OrderListComponent implements OnInit {
     });
 
     this._pushService.orderShipping.subscribe(orderId => {
-      const index = this.orders.findIndex(order => order.Id === orderId);
+      const index = this.orders.findIndex(order => order.id === orderId);
 
       if (index !== -1) {
         const updatedOrder = this.orders[index];
-        updatedOrder.ShippingCreated = true;
+        updatedOrder.shippingCreated = true;
         this.orders[index] = updatedOrder;
       }
     });
